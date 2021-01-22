@@ -12,19 +12,36 @@ public class useCalendarAPI {
 		int setYear, setMonth, offset, getMaxDays;
 		boolean isValid = true;
 		boolean isContinue = true;
-
-
+		String inputYear;
+		do {
+			System.out.println("Enter a Year: ");
+			inputYear = input.nextLine();
+			if (inputYear.isEmpty()) {
+				System.out.println("Required Input, Please Enter a year !");
+				isValid = false;
+			} else if (inputYear.length() > 4 || inputYear.length() < 4) {
+				System.out.println("Invalid Input , Please Enter a 4 Digit year!");
+				isValid = false;
+			}else if(inputYear.matches("[a-zA-Z]+")) {
+				System.out.println("Invalid Input , Please Enter a 4 Digit year!");
+				isValid = false;
+			}else {
+				isValid = true;
+			}
+		} while (!isValid);
+		
+		if (isValid) {
 			do {
-				System.out.println("Enter a Year: ");
-				String inputYear = input.nextLine();
-				if (inputYear.isEmpty()) {
-					System.out.println("Required Input, Please Enter a year !");
-					isValid = false;
-				} else if (inputYear.length() > 4 || inputYear.length() < 4) {
-					System.out.println("Invalid Input , Please Enter a 4 Digit year!");
-					isValid = false;
-				} else {
-					isValid = true;
+				System.out.println("Try Again? Y or N");
+				String getAnswer = input.nextLine();
+				if(getAnswer.isEmpty()) {
+					System.out.println("Required Input, Please type Y or N");
+					isContinue = false;
+				}else if(getAnswer.matches("([A-M,a-m,o-x,z,O-X,Z,0-9])+")) {
+					System.out.println("Invalid Input, Please type Y or N");
+					isContinue = false;
+				}else {
+					isContinue=true;
 					System.out.println("Enter a month: ");
 					String inputMonth = input.nextLine();
 					setYear = Integer.parseInt(inputYear);
@@ -38,7 +55,8 @@ public class useCalendarAPI {
 					displayDayOfWeekName();
 					displayDaysInAMonth(setMonth, offset, getMaxDays);
 				}
-			} while (!isValid);
+			} while (!isContinue);
+		}
 
 		input.close();
 	}
