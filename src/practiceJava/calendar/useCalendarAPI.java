@@ -5,14 +5,17 @@ import java.util.Locale;
 import java.util.Scanner;
 
 public class useCalendarAPI {
-
+	static Scanner input = new Scanner(System.in);
+	static Calendar cal = Calendar.getInstance();
+	static int setYear, setMonth, offset, getMaxDays;
+	static boolean isValid = true;
+	static String inputYear;
 	public static void main(String[] args) {
-		Scanner input = new Scanner(System.in);
-		Calendar cal = Calendar.getInstance();
-		int setYear, setMonth, offset, getMaxDays;
-		boolean isValid = true;
-		boolean isContinue = true;
-		String inputYear;
+		createValidation();
+	}
+	
+	public static void createValidation() {
+	
 		do {
 			System.out.println("Enter a Year: ");
 			inputYear = input.nextLine();
@@ -25,12 +28,48 @@ public class useCalendarAPI {
 			}else if(inputYear.matches("[a-zA-Z]+")) {
 				System.out.println("Invalid Input , Please Enter a 4 Digit year!");
 				isValid = false;
+			}else if(Integer.parseInt(inputYear) > 9999) {
+				System.out.println("Invalid Input , Please Enter a 4 Digit year!");
+				isValid = false;
 			}else {
 				isValid = true;
+				validationForMonth(inputYear);
 			}
 		} while (!isValid);
 		
-		if (isValid) {
+	}
+	
+	public static void validationForMonth(String getYear) {
+		boolean isMonthValid = true;
+		do {
+			System.out.println("Enter a month: ");
+			String inputMonth = input.nextLine();
+			if(inputMonth.isEmpty()) {
+				System.out.println("Input Required, Please enter a month [1-12]");
+				isMonthValid = false;
+			}else if(inputMonth.matches("[a-z,A-Z]+")) {
+				System.out.println("Invalid input, Please enter a number between [1-12]");
+				isMonthValid = false;
+			}else {
+				isMonthValid = true;
+				setYear = Integer.parseInt(getYear);
+				setMonth = Integer.parseInt(inputMonth);
+				cal.set(setYear, setMonth - 1, 1);
+				String getMonthName = cal.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.ENGLISH);
+				System.out.printf("%5s", getMonthName + " ");
+				System.out.println(getYear);
+				offset = cal.get(Calendar.DAY_OF_WEEK);
+				getMaxDays = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+				displayDayOfWeekName();
+				displayDaysInAMonth(setMonth, offset, getMaxDays);
+				useTheCalendarAgain();
+			}
+		}while(!isMonthValid);
+	}
+	
+	public static boolean useTheCalendarAgain() {
+		boolean isContinue = true;
+
 			do {
 				System.out.println("Try Again? Y or N");
 				String getAnswer = input.nextLine();
@@ -40,25 +79,18 @@ public class useCalendarAPI {
 				}else if(getAnswer.matches("([A-M,a-m,o-x,z,O-X,Z,0-9])+")) {
 					System.out.println("Invalid Input, Please type Y or N");
 					isContinue = false;
+				}else if(getAnswer.equalsIgnoreCase("n")) {
+					System.out.println("Thank you for Using Calendar App!!");
+					isContinue=true;
 				}else {
 					isContinue=true;
-					System.out.println("Enter a month: ");
-					String inputMonth = input.nextLine();
-					setYear = Integer.parseInt(inputYear);
-					setMonth = Integer.parseInt(inputMonth);
-					cal.set(setYear, setMonth - 1, 1);
-					String getMonthName = cal.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.ENGLISH);
-					System.out.printf("%5s", getMonthName + " ");
-					System.out.println(inputYear);
-					offset = cal.get(Calendar.DAY_OF_WEEK);
-					getMaxDays = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
-					displayDayOfWeekName();
-					displayDaysInAMonth(setMonth, offset, getMaxDays);
+					createValidation();
 				}
 			} while (!isContinue);
-		}
+		
 
 		input.close();
+		return true;
 	}
 
 	public static void displayDayOfWeekName() {
